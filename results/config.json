@@ -1,0 +1,16 @@
+{
+  "scale": 2,
+  "num_features": 32,
+  "num_blocks": 3,
+  "batch_size": 16,
+  "max_steps": 1000,
+  "learning_rate": 0.0002,
+  "lr_decay_epochs": 40,
+  "lr_decay_factor": 0.5,
+  "grad_clip": 1.0,
+  "seed": 42,
+  "checkpoint_dir": "checkpoints",
+  "results_dir": "results",
+  "save_every": 100,
+  "log_every": 50
+}
