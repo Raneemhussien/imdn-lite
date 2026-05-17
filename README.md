@@ -109,3 +109,52 @@ Expected output: PSNR = 32.68 dB, SSIM = 0.9298 on the 20-image validation set.
 ---
 
 ## Repository Structure
+├── model/
+│   └── imdn_lite.py                    # IMDN-lite architecture (PRM, CCA, IIC)
+├── data/
+│   └── splits.txt                      # All image IDs: train / val / held-out test
+├── scripts/
+│   ├── preprocess.py                   # Patch extraction and augmentation pipeline
+│   ├── train.py                        # Steps-based training loop
+│   └── evaluate.py                     # PSNR/SSIM evaluation with border shave
+├── checkpoints/
+│   └── best_model.pth                  # Best checkpoint (step 1000, 97,060 params)
+├── results/
+│   ├── CISC_867_Midterm_Report_Group1.pdf
+│   ├── results_summary.json            # Full metrics and training history
+│   ├── config.json                     # Hyperparameter configuration
+│   ├── training_curves.png             # PSNR/SSIM/Loss vs steps
+│   ├── visual_comparison.png           # Bicubic vs IMDN-lite vs HR crops
+│   ├── inference_time.png              # CPU inference time analysis
+│   └── per_image_psnr.png             # Per-image PSNR breakdown
+├── notebooks/
+│   └── Efficient_Image_Super-Resolution_with_Lightweight_CNNs.ipynb
+├── README.md
+└── LOG.md
+
+---
+
+## Reproducibility
+
+- All randomness fixed with seed=42 (Python, NumPy, PyTorch, PYTHONHASHSEED)
+- Hardware: Google Colab CPU runtime
+- Framework: PyTorch 2.10.0+cpu
+- Hyperparameters: see `results/config.json`
+- Full training history: see `results/results_summary.json`
+- To verify: run `evaluate.py` with `checkpoints/best_model.pth`  
+  → should produce PSNR=32.68 dB, SSIM=0.9298 on the 20-image validation set
+
+---
+
+## References
+
+[1] Z. Hui, X. Gao, Y. Yang, and X. Wang, "Lightweight Image Super-Resolution 
+with Information Multi-Distillation Network," ACM MM 2019.  
+doi: 10.1145/3343031.3351084
+
+[2] E. Agustsson and R. Timofte, "NTIRE 2017 Challenge on Single Image 
+Super-Resolution: Dataset and Study," CVPR Workshops 2017.  
+https://data.vision.ee.ethz.ch/cvl/DIV2K/
+
+[3] Z. Zheng, "IMDN PyTorch Implementation (reference only)."  
+https://github.com/Zheng222/IMDN
