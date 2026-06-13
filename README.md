@@ -1,8 +1,11 @@
 # IMDN-lite: Efficient Image Super-Resolution on CPU
 
 **Course:** CISC 867 — Deep Learning  
+
 **Team:** Farida Gaber · Raneem Alnaghy . Rodina Khallaf
+
 **Institution:** School of Computing, Queen's University, Kingston, Canada  
+
 **Live Demo:** [Hugging Face Spaces](https://huggingface.co/spaces/farida5gaber/IMDN-Lite)  
 
 ---
