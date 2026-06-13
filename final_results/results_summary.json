@@ -1,0 +1,71 @@
+{
+  "config": {
+    "scale": 2,
+    "num_features": 32,
+    "num_blocks": 3,
+    "batch_size": 32,
+    "max_steps": 1000,
+    "learning_rate": 0.0002,
+    "lr_decay_epochs": 40,
+    "lr_decay_factor": 0.5,
+    "grad_clip": 1.0,
+    "seed": 42,
+    "checkpoint_dir": "checkpoints",
+    "results_dir": "results",
+    "save_every": 100,
+    "log_every": 50
+  },
+  "data": {
+    "train_patches": 116914,
+    "val_images": 20,
+    "source1": "C:\\Users\\DPQUAI250142\\Desktop\\DL_project\\patch_dataset\\patch_dataset",
+    "source2": "C:\\Users\\DPQUAI250142\\Desktop\\DL_project\\patches_Dataset"
+  },
+  "model": {
+    "name": "IMDN-lite",
+    "num_features": 32,
+    "num_blocks": 3,
+    "parameters": 97060,
+    "lr_conv_fix": true
+  },
+  "bicubic": {
+    "psnr": 32.43594846725464,
+    "ssim": 0.9220666907085319,
+    "psnr_std": 6.182524145638932,
+    "avg_time_ms": 6.824827194213867
+  },
+  "imdn": {
+    "psnr": 32.708757400512695,
+    "ssim": 0.9301693502413422,
+    "psnr_std": 6.025977429937086,
+    "avg_time_ms": 709.8322153091431
+  },
+  "improvement": {
+    "psnr_gain_db": 0.2728089332580552,
+    "ssim_gain": 0.008102659532810308
+  },
+  "training": {
+    "best_step": 1000,
+    "max_steps": 1000,
+    "time_minutes": 0.0,
+    "history": {
+      "train_loss": [],
+      "train_psnr": [],
+      "val_psnr": [],
+      "val_ssim": [],
+      "lr": []
+    }
+  },
+  "srcnn": {
+    "psnr": 32.42011651992798,
+    "ssim": 0.9286780725067872,
+    "psnr_std": 5.709382692335729,
+    "avg_time_ms": 682.1359038352966
+  },
+  "fsrcnn": {
+    "psnr": 25.774140071868896,
+    "ssim": 0.7764042609172328,
+    "psnr_std": 3.8557324111512052,
+    "avg_time_ms": 262.16726303100586
+  }
+}

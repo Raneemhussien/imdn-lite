@@ -1,0 +1,42 @@
+{
+  "block_ablation": [
+    {
+      "blocks": 1,
+      "params": 42132,
+      "psnr": 26.4788,
+      "ssim": 0.7521
+    },
+    {
+      "blocks": 3,
+      "params": 97060,
+      "psnr": 27.1474,
+      "ssim": 0.7831
+    },
+    {
+      "blocks": 5,
+      "params": 151988,
+      "psnr": 26.6776,
+      "ssim": 0.76
+    }
+  ],
+  "channel_ablation": [
+    {
+      "features": 16,
+      "params": 25480,
+      "psnr": 31.7347,
+      "ssim": 0.9168
+    },
+    {
+      "features": 32,
+      "params": 97060,
+      "psnr": 32.4219,
+      "ssim": 0.9304
+    },
+    {
+      "features": 48,
+      "params": 214752,
+      "psnr": 33.1763,
+      "ssim": 0.936
+    }
+  ]
+}
