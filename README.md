@@ -11,66 +11,13 @@
 
 IMDN-lite is a 97,060-parameter adaptation of the [Information Multi-Distillation Network (IMDN)](https://doi.org/10.1145/3343031.3351084) for ×2 single-image super-resolution (SISR), designed to run **entirely on CPU** without GPU acceleration.
 
-Starting from the original IMDN, we reduce the feature channels from 64 → 32 and the IMDB block count from 6 → 3, yielding a model ~7× smaller that retains the Progressive Refinement Module (PRM) and Contrast-Aware Channel Attention (CCA) mechanisms. Trained on a 200-image DIV2K subset for 10,000 gradient steps, IMDN-lite achieves **34.08 dB PSNR / 0.9441 SSIM** on a held-out 20-image validation set — surpassing bicubic interpolation by **+1.64 dB** and outperforming SRCNN trained under identical conditions by **+1.66 dB**.
-
----
-
-## Results
-
-### DIV2K Validation Set (20 images, best checkpoint step 9,700)
-
-| Method | PSNR (dB) | SSIM | Params | Time (ms/img) |
-|---|---|---|---|---|
-| Bicubic | 32.44 | 0.9221 | — | 5.33 |
-| SRCNN | 32.42 | 0.9287 | 69,251 | 668.10 |
-| FSRCNN | 25.77 | 0.7764 | 24,683 | 264.93 |
-| **IMDN-lite (Ours)** | **34.08** | **0.9441** | **97,060** | **723.87** |
-
-IMDN-lite is the only learned model to surpass bicubic. SRCNN and IMDN-lite have similar inference times (~668 vs ~724 ms/img), yet IMDN-lite provides a +1.66 dB PSNR advantage — demonstrating the effectiveness of PRM distillation and CCA attention per gradient update.
-
-### Performance Progression (steps-based training)
-
-| Training Step | PSNR (dB) | SSIM | Gain vs. Bicubic |
-|---|---|---|---|
-| 1,000 | 32.71 | 0.9302 | +0.27 dB |
-| 3,000 | 33.43 | 0.9393 | +0.99 dB |
-| 6,000 | 33.66 | 0.9409 | +1.22 dB |
-| **10,000 (best: step 9,700)** | **34.08** | **0.9441** | **+1.64 dB** |
-
-Neither PSNR nor SSIM showed a plateau at step 10,000, confirming the reported result is a **lower bound** on achievable quality.
-
-### Generalization
-
-| Evaluation Set | Bicubic | IMDN-lite | Gain |
-|---|---|---|---|
-| DIV2K validation (20 imgs) | 32.44 | 34.08 | +1.64 dB |
-| DIV2K held-out test (20 imgs) | 31.65 | 33.18 | +1.53 dB |
-| Set14 benchmark (14 imgs) | 28.31 | 29.83 | +1.52 dB |
-
-IMDN-lite achieves positive gains over bicubic on **all** held-out images (20/20 DIV2K test, 14/14 Set14) with no exceptions.
-
-### Model Compression
-
-| Method | PSNR (dB) | Model Size | ΔPSNR |
-|---|---|---|---|
-| FP32 (base) | 34.0778 | 394.8 KB | — |
-| FP16 quantization | 34.0776 | 205.3 KB | −0.0002 dB |
-| 15% magnitude pruning | 33.5883 | 394.8 KB | −0.49 dB |
-
-FP16 achieves **1.92× size reduction** with negligible quality loss. 15% unstructured pruning zeroes 14,482 of 97,060 parameters while retaining 98.6% of baseline PSNR.
-
-### Comparison with Original IMDN
-
-| Configuration | PSNR (dB) | Training Data | Steps | Hardware |
-|---|---|---|---|---|
-| Original IMDN | 38.00 (Set5) | 800 DIV2K | ~500,000 | GPU |
-| **IMDN-lite (Ours)** | **34.08 (DIV2K val)** | **200 DIV2K** | **10,000** | **CPU** |
-
-The −3.92 dB gap is fully attributable to the ~50× smaller training budget (~1% of original compute) and does not reflect an architectural limitation.
+Starting from the original IMDN, we reduce feature channels 64 → 32 and IMDB block count 6 → 3, yielding a model ~7× smaller that retains the Progressive Refinement Module (PRM) and Contrast-Aware Channel Attention (CCA). Trained on a 200-image DIV2K subset for 10,000 gradient steps, IMDN-lite achieves **34.08 dB PSNR / 0.9441 SSIM** on a 20-image validation set — surpassing bicubic by **+1.64 dB** and outperforming SRCNN trained under identical conditions by **+1.66 dB**.
 
 ---
 
 ## Architecture
+
+![IMDN-lite Architecture](https://github.com/Raneemhussien/imdn-lite/blob/main/figures/IMDN-Architecture.jpeg)
 
 IMDN-lite follows a `HEAD → BODY → TAIL` pipeline. Total trainable parameters: **97,060**.
 
@@ -105,17 +52,67 @@ SR Output (3×96×96)
 
 ---
 
+## Results
+
+### DIV2K Validation Set (20 images, best checkpoint step 9,700)
+
+| Method | PSNR (dB) | SSIM | Params | Time (ms/img) |
+|---|---|---|---|---|
+| Bicubic | 32.44 | 0.9221 | — | 5.33 |
+| SRCNN | 32.42 | 0.9287 | 69,251 | 668.10 |
+| FSRCNN | 25.77 | 0.7764 | 24,683 | 264.93 |
+| **IMDN-lite (Ours)** | **34.08** | **0.9441** | **97,060** | **723.87** |
+
+### Performance Progression
+
+| Training Step | PSNR (dB) | SSIM | Gain vs. Bicubic |
+|---|---|---|---|
+| 1,000 | 32.71 | 0.9302 | +0.27 dB |
+| 3,000 | 33.43 | 0.9393 | +0.99 dB |
+| 6,000 | 33.66 | 0.9409 | +1.22 dB |
+| **10,000 (best: step 9,700)** | **34.08** | **0.9441** | **+1.64 dB** |
+
+Neither PSNR nor SSIM plateaued at step 10,000 — the reported result is a **lower bound**.
+
+### Generalization
+
+| Evaluation Set | Bicubic | IMDN-lite | Gain |
+|---|---|---|---|
+| DIV2K validation (20 imgs) | 32.44 | 34.08 | +1.64 dB |
+| DIV2K held-out test (20 imgs) | 31.65 | 33.18 | +1.53 dB |
+| Set14 benchmark (14 imgs) | 28.31 | 29.83 | +1.52 dB |
+
+IMDN-lite achieves positive gains over bicubic on **all** held-out images (20/20 DIV2K test, 14/14 Set14).
+
+### Model Compression
+
+| Method | PSNR (dB) | Model Size | ΔPSNR |
+|---|---|---|---|
+| FP32 (base) | 34.0778 | 394.8 KB | — |
+| FP16 quantization | 34.0776 | 205.3 KB | −0.0002 dB |
+| 15% magnitude pruning | 33.5883 | 394.8 KB | −0.49 dB |
+
+### Comparison with Original IMDN
+
+| Configuration | PSNR (dB) | Training Data | Steps | Hardware |
+|---|---|---|---|---|
+| Original IMDN | 38.00 (Set5) | 800 DIV2K | ~500,000 | GPU |
+| **IMDN-lite (Ours)** | **34.08 (DIV2K val)** | **200 DIV2K** | **10,000** | **CPU** |
+
+The −3.92 dB gap is fully attributable to the ~50× smaller training budget (~1% of original compute).
+
+---
+
 ## Key Findings
 
-The project's most significant finding is **methodological**: switching from epoch-based to steps-based LR scheduling produced a **+3.43 dB gain** with no change to architecture or data — the single highest-impact design decision in the entire project.
+The most significant finding is **methodological**: switching from epoch-based to steps-based LR scheduling produced a **+3.43 dB gain** with no change to architecture or data.
 
-Three factors determined performance under CPU constraints:
+> The epoch-based 30-epoch run (1,310 min of CPU training on 116,914 patches) achieved only **+0.55 dB** over bicubic, versus **+1.64 dB** for the steps-based run.
 
-1. **Training methodology** — epoch-based decay reaches a low learning rate before the model converges on limited data; steps-based scheduling maintains a more favourable optimization trajectory (+3.43 dB controlled gain)
-2. **Data volume** — a 6.4× increase in patches (+2.73 dB) crossed the bicubic baseline for the first time
-3. **Architecture efficiency** — PRM channel-splitting + CCA attention extract more useful features per gradient update than simpler baselines (SRCNN, FSRCNN)
-
-> The epoch-based 30-epoch run (1,310 min of CPU training on the full 116,914-patch dataset) achieved only **+0.55 dB** over bicubic versus **+1.64 dB** for the steps-based run — confirming the training schedule as the dominant factor.
+Three factors determined performance:
+1. **Training methodology** — steps-based scheduling was the single highest-impact change (+3.43 dB)
+2. **Data volume** — a 6.4× patch increase (+2.73 dB) crossed the bicubic baseline for the first time
+3. **Architecture efficiency** — PRM + CCA extract more useful features per gradient update than SRCNN/FSRCNN
 
 ---
 
@@ -153,8 +150,6 @@ Three factors determined performance under CPU constraints:
 | **32 (Ours)** | **97,060** | **32.42** | **0.9304** | Optimal for CPU |
 | 48 | 214,752 | 33.18 | 0.9360 | +0.76 dB, 2.2× params |
 
-The 3-block / 32-channel configuration gives the best accuracy–efficiency trade-off. Deeper or wider models require proportionally more gradient steps to converge on limited data.
-
 ---
 
 ## Setup
@@ -169,7 +164,7 @@ pip install torch==2.2.0 scikit-image numpy matplotlib pillow
 
 ### 2. Data
 
-Download preprocessed `.npy` patch files from Google Drive:
+Download preprocessed `.npy` patch files:
 
 - [Patches — first 100 images (Source 1)](https://drive.google.com/drive/folders/1kZ8T9BqNz1-S7CbUZkeeUQvzxH2BtMO)
 - [Patches — second 100 images (Source 2)](https://drive.google.com/drive/folders/1vLVZFC2aJC1D4jLZ4T-OdFOnRlHsMT47)
@@ -229,15 +224,18 @@ Expected output (best checkpoint, step 9,700): **PSNR = 34.08 dB, SSIM = 0.9441*
 │   └── evaluate.py                      # PSNR/SSIM evaluation with border shave
 ├── checkpoints/
 │   └── best_model.pth                   # Best checkpoint (step 9,700, 97,060 params)
+├── figures/
+│   ├── architecture.png                 # IMDN-lite architecture pipeline diagram
+│   └── project_timeline_dark.png        # Project execution timeline
 ├── results/
 │   ├── CISC_867_Midterm_Report_Group1.pdf
 │   ├── CISC_867_Group1_Report.pdf       # Final report
 │   ├── results_summary.json             # Full metrics and training history
 │   ├── config.json                      # Hyperparameter configuration
-│   ├── training_curves.png              # PSNR/SSIM/Loss vs steps
-│   ├── visual_comparison.png            # Bicubic vs IMDN-lite vs HR crops
-│   ├── inference_time.png               # CPU inference time analysis
-│   └── per_image_psnr.png              # Per-image PSNR breakdown
+│   ├── training_curves.png
+│   ├── visual_comparison.png
+│   ├── inference_time.png
+│   └── per_image_psnr.png
 ├── notebooks/
 │   └── Efficient_Image_Super-Resolution_with_Lightweight_CNNs.ipynb
 ├── README.md
@@ -248,25 +246,38 @@ Expected output (best checkpoint, step 9,700): **PSNR = 34.08 dB, SSIM = 0.9441*
 
 ## Reproducibility
 
-All randomness is fixed with `seed=42` (Python, NumPy, PyTorch, PYTHONHASHSEED).
+All randomness fixed with `seed=42` (Python, NumPy, PyTorch, PYTHONHASHSEED).
 
 - **Framework:** PyTorch 2.2.0+cpu
 - **Hardware:** Google Colab CPU + local CPU (VS Code)
 - **Hyperparameters:** `results/config.json`
 - **Full training history:** `results/results_summary.json`
-- **Verification:** run `evaluate.py` with `checkpoints/best_model.pth` → should produce PSNR = 34.08 dB, SSIM = 0.9441
+- **Verification:** run `evaluate.py` with `checkpoints/best_model.pth` → PSNR = 34.08 dB, SSIM = 0.9441
 
-> **Note on checkpoints:** `best_model.pth` is the best-PSNR checkpoint (step 9,700). To resume training, use `latest_model.pth` (last completed step), not `best_model.pth` — the best checkpoint may be from an earlier step than the most recently completed one.
+> **Checkpoint note:** `best_model.pth` is the best-PSNR checkpoint (step 9,700). To resume training, use `latest_model.pth` (last completed step) — the best checkpoint may be from an earlier step than the most recently completed one.
+
+---
+
+## Project Timeline
+
+![Project Timeline](https://github.com/Raneemhussien/imdn-lite/blob/main/figures/CISC_867_Group1_Timeline.png)
+
+The project ran across four phases over six weeks (May–June 2026):
+
+- **Phase 1 — Baseline Setup (May 4–15):** Raneem led IMDN paper review. Rodina handled DIV2K download, preprocessing, and assembling the 116,914-patch dataset. Farida implemented the bicubic baseline, IMDN-lite architecture, and training loop. All training runs 1–7 completed before the midterm submission (May 15).
+- **Phase 2 — Analysis and Tuning (May 18–25):** Raneem led hyperparameter tuning and ablation design. Farida conducted cross-run comparability analysis. Rodina produced training figures and plots. Team observed Eid Al-Adha break (~May 25–June 1).
+- **Phase 3 — Final Experiments (June 1–8):** Farida implemented SRCNN/FSRCNN baselines, extended training to 10,000 steps, FP16 quantization, and magnitude pruning. Rodina ran ablation studies, computed all metrics, and evaluated on DIV2K test set and Set14. Raneem led qualitative panel production and result interpretation.
+- **Phase 4 — Delivery (June 4–11):** Farida produced the final notebook. Rodina managed the GitHub repository. Raneem led presentation preparation. All three contributed to final report writing and proofreading.
 
 ---
 
 ## Team Contributions
 
-**Rodina Khallaf** — Data & Evaluation Lead: full preprocessing pipeline (modulo cropping, patch extraction, rotation augmentation, `.npy` serialization), stride misconfiguration identification and corrected reprocessing, final 116,914-patch dataset assembly, all ablation experiments, generalization evaluation on the held-out DIV2K test set and Set14 benchmark, training figures and plots, GitHub repository management.
+**Rodina Khallaf** — Data & Evaluation Lead: full preprocessing pipeline (modulo cropping, patch extraction, rotation augmentation, `.npy` serialization), stride misconfiguration identification and corrected reprocessing, final 116,914-patch dataset assembly, all ablation experiments, generalization evaluation on the held-out DIV2K test set and Set14, training figures and plots, GitHub repository management.
 
 **Farida Gaber** — Model & Implementation Lead: complete IMDN-lite architecture (PRM, CCA, IIC, lr_conv), steps-based training loop, gradient clipping, reproducibility controls, two critical bug fixes (missing lr_conv layer; missing 2-pixel border shave in metric computation), all 7 training runs, SRCNN/FSRCNN baselines, extended training to 10,000 steps, FP16 quantization, magnitude pruning, CPU inference timing, final notebook.
 
-**Raneem Alnaghy** — Analysis & Reporting Lead: hyperparameter tuning strategy, ablation study design, cross-run comparability analysis, midterm report, qualitative panel production, result interpretation, final report writing and proofreading, presentation preparation.
+**Raneem Alnaghy** — Analysis & Reporting Lead: hyperparameter tuning strategy, ablation study design, cross-run comparability analysis, midterm report, qualitative panel production, result interpretation, final report writing, proofreading, and presentation preparation.
 
 ---
 
