@@ -1,7 +1,7 @@
 # IMDN-lite: Efficient Image Super-Resolution on CPU
 
 **Course:** CISC 867 — Deep Learning  
-**Team:** Farida Gaber · Rodina Khallaf · Raneem Alnaghy  
+**Team:** Farida Gaber · Raneem Alnaghy . Rodina Khallaf
 **Institution:** School of Computing, Queen's University, Kingston, Canada  
 **Live Demo:** [Hugging Face Spaces](https://huggingface.co/spaces/farida5gaber/IMDN-Lite)  
 
@@ -261,13 +261,6 @@ All randomness fixed with `seed=42` (Python, NumPy, PyTorch, PYTHONHASHSEED).
 ## Project Timeline
 
 ![Project Timeline](https://github.com/Raneemhussien/imdn-lite/blob/main/figures/CISC_867_Group1_Timeline.png)
-
-The project ran across four phases over six weeks (May–June 2026):
-
-- **Phase 1 — Baseline Setup (May 4–15):** Raneem led IMDN paper review. Rodina handled DIV2K download, preprocessing, and assembling the 116,914-patch dataset. Farida implemented the bicubic baseline, IMDN-lite architecture, and training loop. All training runs 1–7 completed before the midterm submission (May 15).
-- **Phase 2 — Analysis and Tuning (May 18–25):** Raneem led hyperparameter tuning and ablation design. Farida conducted cross-run comparability analysis. Rodina produced training figures and plots. Team observed Eid Al-Adha break (~May 25–June 1).
-- **Phase 3 — Final Experiments (June 1–8):** Farida implemented SRCNN/FSRCNN baselines, extended training to 10,000 steps, FP16 quantization, and magnitude pruning. Rodina ran ablation studies, computed all metrics, and evaluated on DIV2K test set and Set14. Raneem led qualitative panel production and result interpretation.
-- **Phase 4 — Delivery (June 4–11):** Farida produced the final notebook. Rodina managed the GitHub repository. Raneem led presentation preparation. All three contributed to final report writing and proofreading.
 
 ---
 
